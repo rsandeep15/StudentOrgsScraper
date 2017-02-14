@@ -1,0 +1,24 @@
+{
+  "name": "studentorgsscraper",
+  "version": "1.0.0",
+  "description": "A Node.js app to scrap the list of student organizations at UCSD",
+  "main": "scrapeOrgs.js",
+  "dependencies": {
+    "express": "^4.14.1",
+    "firebase": "^3.6.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsandeep15/StudentOrgsScraper.git"
+  },
+  "author": "Sandeep Raghunandhan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rsandeep15/StudentOrgsScraper/issues"
+  },
+  "homepage": "https://github.com/rsandeep15/StudentOrgsScraper#readme"
+}
