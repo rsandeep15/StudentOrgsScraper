@@ -5,19 +5,19 @@ var os = require('os')
 var config = {
   apiKey: "AIzaSyAXzz7n47GPvxG1PFmlfrhdNnfbpvfDxU8",
   authDomain: "chorus-ad084.firebaseapp.com",
-  databaseURL: "https://chorus-ad084.firebaseio.com/",
-  //  storageBucket: "bucket.appspot.com"
+  databaseURL: "https://chorus-ad084.firebaseio.com/"
 };
 firebase.initializeApp(config);
 
 // Get a reference to the database service
 var dbRef = firebase.database().ref("organizations");
-
-
-//Clear the organizations list if it exists
+/**
+ * Removes the anchor tags from the input.
+ */
 function extractNames(rawData, extractionCallback){
   var lines = rawData.split(os.EOL);
   var organizations = [];
+
   // Preprocess the list of organizations
   lines.forEach(function(line){
     if (line.includes("<a class=\"orgLink\"")){
@@ -27,25 +27,28 @@ function extractNames(rawData, extractionCallback){
       organizations.push(line)
     }
   })
+
+  // Save off the length of the number of organizations
   var length = organizations.length;
+
+  // Push each organization to the Firebase DB
   organizations.forEach(function(org, index){
     var newOrg = dbRef.push();
     newOrg.set(org).then(function(){
       if (index == length - 1){
-        // go offline after last data point is added
-        console.log("done!")
-	extractionCallback(organizations); 
+        // Call the callback with the organizations
+        extractionCallback(organizations);
       }
     });
   })
-  dbRef.on('child_added', function(data){
-    //console.log(data.val());
-  });
 }
 
-// Perform a http request to the student organization site
+/**
+ * Perform a http request to the student organization site, and pass the
+ * result with a callback to extractTitles
+ */
 var getOrgs = function(getOrgsCallback){
-  var organizations; 
+  var organizations;
   http.get('http://studentorg.ucsd.edu', (res) => {
     const statusCode = res.statusCode;
     const contentType = res.headers['content-type'];
@@ -62,8 +65,12 @@ var getOrgs = function(getOrgsCallback){
           // First finish the removing the old references
           dbRef.remove(function(error){
             if (!error){
-              	extractNames(rawData, function(organizations) { getOrgsCallback(organizations) } );
-	    } 
+              // Extract the names of the students organizations
+              // Get it with a callback
+              extractNames(rawData, function(organizations) {
+                getOrgsCallback(organizations)
+              } );
+            }
           });
         }
       } catch (e) {
@@ -73,8 +80,9 @@ var getOrgs = function(getOrgsCallback){
   })
 }
 
+// Main method initiates callback chain
 var main = function(getOrganizations) {
-	getOrgs(function(orgs){getOrganizations(orgs)}); 
+  getOrgs(function(orgs){getOrganizations(orgs)});
 }
 
-module.exports = main; 
+module.exports = main;
