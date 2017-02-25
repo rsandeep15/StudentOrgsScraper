@@ -33,7 +33,7 @@ function extractNames(rawData, extractionCallback){
 
   // Push each organization to the Firebase DB
   organizations.forEach(function(org, index){
-    var newOrg = dbRef.push();
+    var newOrg = dbRef.child(index);
     newOrg.set(org).then(function(){
       if (index == length - 1){
         // Call the callback with the organizations
