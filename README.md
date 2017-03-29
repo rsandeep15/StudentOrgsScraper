@@ -9,5 +9,5 @@ GET /details/:orgId
 - Returns the org name and the details of the organization as a JSON object. 
 Live Demo: http://52.38.85.90/details/6589
 
-Simply run `node app.js` and navigate to endpoint /update on your browser.
-App runs on port 3000. 
+Simply run `node app.js` and navigate to endpoint on your browser for local testing. 
+App runs on port 3000 by default. 
