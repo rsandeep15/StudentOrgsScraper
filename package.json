@@ -4,8 +4,7 @@
   "description": "A Node.js app to scrap the list of student organizations at UCSD",
   "main": "scrapeOrgs.js",
   "dependencies": {
-    "express": "^4.14.1",
-    "firebase": "^3.6.9"
+    "express": "^4.14.1"
   },
   "devDependencies": {},
   "scripts": {

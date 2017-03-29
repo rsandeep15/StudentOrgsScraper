@@ -1,16 +1,7 @@
 var http = require('http')
-var firebase = require('firebase')
 var os = require('os')
-// Set the configuration for your app
-var config = {
-  apiKey: "AIzaSyAXzz7n47GPvxG1PFmlfrhdNnfbpvfDxU8",
-  authDomain: "chorus-ad084.firebaseapp.com",
-  databaseURL: "https://chorus-ad084.firebaseio.com/"
-};
-firebase.initializeApp(config);
 
 // Get a reference to the database service
-var dbRef = firebase.database().ref("organizations");
 /**
  * Removes the anchor tags from the input.
  */
@@ -30,17 +21,40 @@ function extractNames(rawData, extractionCallback){
 
   // Save off the length of the number of organizations
   var length = organizations.length;
+}
 
-  // Push each organization to the Firebase DB
-  organizations.forEach(function(org, index){
-    var newOrg = dbRef.child(index);
-    newOrg.set(org).then(function(){
-      if (index == length - 1){
-        // Call the callback with the organizations
-        extractionCallback(organizations);
-      }
+var getOrgDetails = function(orgId, getOrgCallback) {
+  var details;
+  http.get('http://studentorg.ucsd.edu/RdOnlyDetail.aspx?data=' + orgId,
+    (res) => {
+      var rawData = '';
+      res.setEncoding('utf8')
+      res.on('data', function(chunk) {rawData += chunk})
+      res.on('end', function(){
+        var response = {}
+        if (res.statusCode == 200) {
+          var lines = rawData.split(os.EOL)
+          // Preprocess the list of organizations
+          lines.forEach(function(line){
+            let matchName = "<span id=\"MainContent_fvOrgDetail_lblOrgName\" class=\"header\">"
+            let matchDescription = "<span id=\"MainContent_fvOrgDetail_lblPurpose\">"
+            if (line.includes(matchName)){
+              line = line.replace(matchName, "").replace("<h2 class=\"header\">", "").replace("</h2>", "").trim()
+              response["orgName"] = line
+            }
+            if (line.includes(matchDescription)) {
+              line = line.replace(matchDescription, "").replace("</span>", "").trim();
+              response["description"] = line
+            }
+          })
+        }
+        else {
+          response["orgName"] = "Not Found"
+          response["description"] = "Not Found"
+        }
+        getOrgCallback(response)
+      })
     });
-  })
 }
 
 /**
@@ -62,17 +76,10 @@ var getOrgs = function(getOrgsCallback){
     res.on('end', function()  {
       try {
         if (res.statusCode == 200){
-          // First finish the removing the old references
-          dbRef.remove(function(error){
-            if (!error){
-              // Extract the names of the students organizations
-              // Get it with a callback
-              extractNames(rawData, function(organizations) {
-                getOrgsCallback(organizations)
-              } );
-            }
-          });
-        }
+          extractNames(rawData, function(organizations) {
+            getOrgsCallback(organizations)
+        })
+      }
       } catch (e) {
         console.log(e.message);
       }
@@ -80,9 +87,10 @@ var getOrgs = function(getOrgsCallback){
   })
 }
 
-// Main method initiates callback chain
+// Main function initiates callback chain
 var main = function(getOrganizations) {
   getOrgs(function(orgs){getOrganizations(orgs)});
 }
 
-module.exports = main;
+
+module.exports = {main: main, getOrgDetails: getOrgDetails};
