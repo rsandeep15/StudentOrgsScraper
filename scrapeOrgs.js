@@ -36,8 +36,8 @@ var getOrgDetails = function(orgId, getOrgCallback) {
           var lines = rawData.split(os.EOL)
           // Preprocess the list of organizations
           lines.forEach(function(line){
-            let matchName = "<span id=\"MainContent_fvOrgDetail_lblOrgName\" class=\"header\">"
-            let matchDescription = "<span id=\"MainContent_fvOrgDetail_lblPurpose\">"
+            var matchName = "<span id=\"MainContent_fvOrgDetail_lblOrgName\" class=\"header\">"
+            var matchDescription = "<span id=\"MainContent_fvOrgDetail_lblPurpose\">"
             if (line.includes(matchName)){
               line = line.replace(matchName, "").replace("<h2 class=\"header\">", "").replace("</h2>", "").trim()
               response["orgName"] = line
