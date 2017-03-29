@@ -18,6 +18,7 @@ function extractNames(rawData, extractionCallback){
       organizations.push(line)
     }
   })
+  extractionCallback(organizations)
 
   // Save off the length of the number of organizations
   var length = organizations.length;
