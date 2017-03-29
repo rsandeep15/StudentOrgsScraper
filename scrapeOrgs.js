@@ -12,9 +12,7 @@ function extractNames(rawData, extractionCallback){
   // Preprocess the list of organizations
   lines.forEach(function(line){
     if (line.includes("<a class=\"orgLink\"")){
-      line = line.replace("</a>", "")
-      line = line.substring(line.indexOf(">")+1)
-      line = line.replace("\r", "")
+      line = line.replace("</a>", "").substring(line.indexOf(">")+1).replace("\r", "")
       organizations.push(line)
     }
   })
@@ -88,10 +86,4 @@ var getOrgs = function(getOrgsCallback){
   })
 }
 
-// Main function initiates callback chain
-var main = function(getOrganizations) {
-  getOrgs(function(orgs){getOrganizations(orgs)});
-}
-
-
-module.exports = {main: main, getOrgDetails: getOrgDetails};
+module.exports = {getOrgs: getOrgs, getOrgDetails: getOrgDetails};

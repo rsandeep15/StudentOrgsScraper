@@ -4,7 +4,7 @@ var organizations = require('./scrapeOrgs.js')
 app.get('/update', function(req, res){
 	res.setHeader('Content-Type', 'application/json');
 	res.status(200);
-	var orgs = organizations.main(function(response){
+	var orgs = organizations.getOrgs(function(response){
 		var object = {};
 		object['organizations'] = response;
 		console.log("Organization list updated!");
