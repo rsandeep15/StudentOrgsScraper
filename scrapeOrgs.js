@@ -23,7 +23,6 @@ function extractNames(rawData, extractionCallback){
 }
 
 var getOrgDetails = function(orgId, getOrgCallback) {
-  var details;
   http.get('http://studentorg.ucsd.edu/RdOnlyDetail.aspx?data=' + orgId,
     (res) => {
       var rawData = '';
