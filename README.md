@@ -4,9 +4,6 @@ An API built on Node and Express to retrieve useful information about student ru
 GET /update
 - Returns a live list of active student organizations at UCSD as a JSON array. 
 
-GET /details/:orgId - DEPRECATED
-- Returns the org name and the details of the organization as a JSON object, given an orgId.
-
 GET /csecapes
 - Returns all CSE CAPES statistics as a JSON array.
 
