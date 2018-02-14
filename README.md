@@ -7,5 +7,8 @@ GET /update
 GET /details/:orgId
 - Returns the org name and the details of the organization as a JSON object, given an orgId.
 
+GET /csecapes
+- Returns all CSE CAPES statistics as a JSON array.
+
 Simply run `node app.js` and navigate to an endpoint on your browser for local testing. 
 App runs on port 3000 by default.
