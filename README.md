@@ -1,4 +1,4 @@
-# UCSD Students Orgs API 
+# UCSD API 
 An API built on Node and Express to retrieve useful information about student run organizations at UC San Diego. 
 
 GET /update
