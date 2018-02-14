@@ -1,6 +1,6 @@
 var http = require('http')
 var os = require('os')
-
+var JSSoup = require('jssoup').default;
 // Get a reference to the database service
 /**
  * Removes the anchor tags from the input.
@@ -8,14 +8,12 @@ var os = require('os')
 function extractNames(rawData, extractionCallback){
   var lines = rawData.split(os.EOL);
   var organizations = [];
-
+  var soup = new JSSoup(rawData);
+  var tableRows = soup.findAll('td');
   // Preprocess the list of organizations
-  lines.forEach(function(line){
-    if (line.includes("<a class=\"orgLink\"")){
-      line = line.replace("</a>", "").substring(line.indexOf(">")+1).replace("\r", "")
-      organizations.push(line)
-    }
-  })
+  tableRows.forEach(function(row) {
+    organizations.push(row.nextElement.getText());
+  });
   extractionCallback(organizations)
 
   // Save off the length of the number of organizations
