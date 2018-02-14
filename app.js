@@ -30,6 +30,15 @@ app.get('/details/:orgId', function(req, res) {
 	});
 });
 
+app.get('/csecapes', function(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+	organizations.getCSECapes(function(response) {
+		var object = {};
+		object['results'] = response;
+		res.send(JSON.stringify(object));
+	})
+});
+
 
 app.listen('3000', function(){
 	console.log('App listening on port 3000');

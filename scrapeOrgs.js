@@ -83,4 +83,45 @@ var getOrgs = function(getOrgsCallback){
   })
 }
 
-module.exports = {getOrgs: getOrgs, getOrgDetails: getOrgDetails};
+var getCSECapes = function(getCapesCb) {
+  http.get({
+    hostname: 'cape.ucsd.edu',
+    path: '/responses/Results.aspx?courseNumber=CSE',
+    headers: {
+      'User-Agent': 'Mozilla'
+    }
+  },
+  (res) => {
+    var rawData = '';
+    res.setEncoding('utf8');
+    res.on('data', function(chunk) {rawData += chunk})
+    res.on('end', function(){
+      var soup = new JSSoup(rawData);
+      var tableRows = soup.findAll('tr');
+      var results = [];
+      tableRows.forEach(function(row) {
+        var capeEntry = {};
+        var profSoup = row.nextElement;
+        var courseSoup = profSoup.nextSibling;
+        var termSoup = courseSoup.nextSibling;
+        var enrollSoup = termSoup.nextSibling;
+        var studyHrSoup = enrollSoup.nextSibling.nextSibling.nextSibling.nextSibling;
+        var avgSoupExp = studyHrSoup.nextSibling;
+        var avgSoupRec = avgSoupExp.nextSibling;
+        capeEntry['professor'] = profSoup.getText();
+        capeEntry['course'] = courseSoup.getText();
+        capeEntry['term'] = termSoup.getText();
+        capeEntry['enroll'] = enrollSoup.getText();
+        capeEntry['studyHr'] = studyHrSoup.getText();
+        capeEntry['avgExp'] = avgSoupExp.getText();
+        capeEntry['avgRec'] = avgSoupRec.getText();
+        results.push(capeEntry);
+      });
+      getCapesCb(results);
+     });
+  });
+}
+
+module.exports = {getOrgs: getOrgs,
+  getOrgDetails: getOrgDetails,
+  getCSECapes: getCSECapes};
